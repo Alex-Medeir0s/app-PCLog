@@ -6,21 +6,27 @@ export default function WelcomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Image
-        source={require("../../../assets/logo-pclog.png")} // substitua pelo seu ícone
+        source={require("../../../assets/logo-pclog.png")}
         style={styles.logo}
       />
+
       <Text style={styles.title}>Bem-vindo ao PCLog</Text>
-      <Text style={styles.subtitle}>Cadastre serviços de TI e acompanhe as manutenções</Text>
+      <Text style={styles.subtitle}>
+        Cadastre serviços de TI e acompanhe suas manutenções com facilidade.
+      </Text>
 
       <TouchableOpacity
-        style={styles.button}
+        style={styles.buttonPrimary}
         onPress={() => navigation.navigate("IncluirManutencao")}
       >
-        <Text style={styles.buttonText}>Adicionar</Text>
+        <Text style={styles.buttonText}>+ Nova Manutenção</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("ListarManutencao")}>
-        <Text style={styles.loginText}>Ver Manutenções</Text>
+      <TouchableOpacity
+        style={styles.buttonSecondary}
+        onPress={() => navigation.navigate("ListarManutencao")}
+      >
+        <Text style={styles.secondaryText}>Ver Manutenções</Text>
       </TouchableOpacity>
     </View>
   );

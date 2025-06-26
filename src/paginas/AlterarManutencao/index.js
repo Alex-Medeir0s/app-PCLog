@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Switch, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Switch,
+  Alert,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import style from "./style";
 import api from "../../services/api";
 import { formatInputDate, formatInputToCurrency } from "../../utils/formatters";
@@ -44,40 +54,50 @@ export default function AlterarManutencao({ navigation, route }) {
   };
 
   return (
-    <View style={style.container}>
-      <Text style={style.title}>Editar Manutenção</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView
+        contentContainerStyle={style.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={style.card}>
+          <Text style={style.title}>Editar Manutenção</Text>
 
-      <Text style={style.label}>Equipamento</Text>
-      <TextInput style={style.input} value={equipamento} onChangeText={setEquipamento} />
+          <Text style={style.label}>Equipamento</Text>
+          <TextInput style={style.input} value={equipamento} onChangeText={setEquipamento} />
 
-      <Text style={style.label}>Tipo de Manutenção</Text>
-      <TextInput style={style.input} value={tipoManutencao} onChangeText={setTipoManutencao} />
+          <Text style={style.label}>Tipo de Manutenção</Text>
+          <TextInput style={style.input} value={tipoManutencao} onChangeText={setTipoManutencao} />
 
-      <Text style={style.label}>Custo (R$)</Text>
-      <TextInput
-        style={style.input}
-        value={custo}
-        onChangeText={(text) => setCusto(formatInputToCurrency(text))}
-        keyboardType="numeric"
-      />
+          <Text style={style.label}>Custo (R$)</Text>
+          <TextInput
+            style={style.input}
+            value={custo}
+            onChangeText={(text) => setCusto(formatInputToCurrency(text))}
+            keyboardType="numeric"
+          />
 
-      <Text style={style.label}>Data (DD/MM/AAAA)</Text>
-      <TextInput
-        style={style.input}
-        value={dataManutencao}
-        onChangeText={(text) => setDataManutencao(formatInputDate(text))}
-        keyboardType="numeric"
-        placeholder="DD/MM/AAAA"
-      />
+          <Text style={style.label}>Data (DD/MM/AAAA)</Text>
+          <TextInput
+            style={style.input}
+            value={dataManutencao}
+            onChangeText={(text) => setDataManutencao(formatInputDate(text))}
+            keyboardType="numeric"
+            placeholder="DD/MM/AAAA"
+          />
 
-      <View style={style.switchContainer}>
-        <Text style={style.label}>Concluída?</Text>
-        <Switch value={foiConcluida} onValueChange={setFoiConcluida} />
-      </View>
+          <View style={style.switchContainer}>
+            <Text style={style.label}>Concluída?</Text>
+            <Switch value={foiConcluida} onValueChange={setFoiConcluida} />
+          </View>
 
-      <TouchableOpacity style={style.button} onPress={alterarManutencao}>
-        <Text style={style.buttonText}>Salvar</Text>
-      </TouchableOpacity>
-    </View>
+          <TouchableOpacity style={style.button} onPress={alterarManutencao}>
+            <Text style={style.buttonText}>Salvar</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

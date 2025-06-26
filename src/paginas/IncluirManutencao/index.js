@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Switch, Alert, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Switch,
+  Alert,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import styles from "./style";
 import api from "../../services/api";
 import { formatInputDate } from "../../utils/formatters";
@@ -44,41 +54,61 @@ export default function IncluirManutencao({ navigation }) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Nova Manutenção</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.card}>
+          <Text style={styles.title}>Nova Manutenção</Text>
 
-      <Text style={styles.label}>Equipamento</Text>
-      <TextInput style={styles.input} value={equipamento} onChangeText={setEquipamento} placeholder="Ex: Notebook Dell" />
+          <Text style={styles.label}>Equipamento</Text>
+          <TextInput
+            style={styles.input}
+            value={equipamento}
+            onChangeText={setEquipamento}
+            placeholder="Ex: Notebook Dell"
+          />
 
-      <Text style={styles.label}>Tipo de Manutenção</Text>
-      <TextInput style={styles.input} value={tipoManutencao} onChangeText={setTipoManutencao} placeholder="Ex: Troca de HD" />
+          <Text style={styles.label}>Tipo de Manutenção</Text>
+          <TextInput
+            style={styles.input}
+            value={tipoManutencao}
+            onChangeText={setTipoManutencao}
+            placeholder="Ex: Troca de HD"
+          />
 
-      <Text style={styles.label}>Custo (R$)</Text>
-      <TextInput
-        style={styles.input}
-        value={custo}
-        onChangeText={(text) => setCusto(formatInputToCurrency(text))}
-        keyboardType="numeric"
-        placeholder="Ex: 250,00"
-      />
+          <Text style={styles.label}>Custo (R$)</Text>
+          <TextInput
+            style={styles.input}
+            value={custo}
+            onChangeText={(text) => setCusto(formatInputToCurrency(text))}
+            keyboardType="numeric"
+            placeholder="Ex: 250,00"
+          />
 
-      <Text style={styles.label}>Data (DD/MM/AAAA)</Text>
-      <TextInput
-        style={styles.input}
-        value={dataManutencao}
-        onChangeText={(text) => setDataManutencao(formatInputDate(text))}
-        keyboardType="numeric"
-        placeholder="Ex: 25/06/2025"
-      />
+          <Text style={styles.label}>Data (DD/MM/AAAA)</Text>
+          <TextInput
+            style={styles.input}
+            value={dataManutencao}
+            onChangeText={(text) => setDataManutencao(formatInputDate(text))}
+            keyboardType="numeric"
+            placeholder="Ex: 25/06/2025"
+          />
 
-      <View style={styles.switchContainer}>
-        <Text style={styles.label}>Concluída?</Text>
-        <Switch value={foiConcluida} onValueChange={setFoiConcluida} />
-      </View>
+          <View style={styles.switchContainer}>
+            <Text style={styles.label}>Concluída?</Text>
+            <Switch value={foiConcluida} onValueChange={setFoiConcluida} />
+          </View>
 
-      <TouchableOpacity style={styles.button} onPress={incluirManutencao}>
-        <Text style={styles.buttonText}>Salvar</Text>
-      </TouchableOpacity>
-    </ScrollView>
+          <TouchableOpacity style={styles.button} onPress={incluirManutencao}>
+            <Text style={styles.buttonText}>Salvar Manutenção</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
