@@ -52,7 +52,10 @@ export default function ListarManutencao({ navigation }) {
       style={style.card}
       onPress={() => navigation.navigate("AlterarManutencao", { ...item })}
     >
-      <View>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontSize: 12, color: "#666", marginBottom: 2 }}>
+          ID: {item.id}
+        </Text>
         <Text style={style.cardTitle}>{item.equipamento}</Text>
         <Text style={style.cardSubtitle}>
           {item.tipoManutencao} - {formatCurrencyBRL(item.custo)}
