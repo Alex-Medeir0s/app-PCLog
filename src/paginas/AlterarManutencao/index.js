@@ -1,3 +1,4 @@
+// src/paginas/AlterarManutencao/index.js
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Switch, Alert } from "react-native";
 import style from "./style";
@@ -18,13 +19,13 @@ export default function AlterarManutencao({ navigation, route }) {
       return;
     }
 
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(dataManutencao)) {
+    if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(dataManutencao)) {
       Alert.alert("Data inválida", "Use o formato AAAA-MM-DD.");
       return;
     }
 
     try {
-      await api.put(`/manutencao/${id}`, {
+      await api.put(`/manutencao/atualizar/${id}`, {
         equipamento,
         tipoManutencao,
         custo: parseFloat(custo),
@@ -34,7 +35,8 @@ export default function AlterarManutencao({ navigation, route }) {
       Alert.alert("Sucesso", "Manutenção atualizada com sucesso!");
       navigation.navigate("ListarManutencao");
     } catch (error) {
-      Alert.alert("Erro ao alterar", error.message);
+      console.log("Erro ao atualizar:", error.response?.data || error.message);
+      Alert.alert("Erro ao alterar", "Não foi possível atualizar a manutenção.");
     }
   };
 
@@ -52,7 +54,7 @@ export default function AlterarManutencao({ navigation, route }) {
       <TextInput style={style.input} value={custo} onChangeText={setCusto} keyboardType="numeric" />
 
       <Text style={style.label}>Data</Text>
-      <TextInput style={style.input} value={dataManutencao} onChangeText={setDataManutencao} />
+      <TextInput style={style.input} value={dataManutencao} onChangeText={setDataManutencao} placeholder="AAAA-MM-DD" />
 
       <View style={style.switchContainer}>
         <Text style={style.label}>Concluída?</Text>

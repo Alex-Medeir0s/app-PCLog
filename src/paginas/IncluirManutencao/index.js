@@ -17,7 +17,7 @@ export default function IncluirManutencao({ navigation }) {
     }
 
     try {
-      await api.post("/adicionar", {
+      await api.post("/manutencao/adicionar", {
         equipamento,
         tipoManutencao,
         custo: parseFloat(custo),
@@ -28,6 +28,7 @@ export default function IncluirManutencao({ navigation }) {
       Alert.alert("Sucesso", "Manutenção adicionada com sucesso!");
       navigation.navigate("ListarManutencao");
     } catch (error) {
+      console.log("Erro ao adicionar:", error.response?.data || error.message);
       Alert.alert("Erro", "Não foi possível salvar a manutenção.");
     }
   };

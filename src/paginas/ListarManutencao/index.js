@@ -1,3 +1,4 @@
+// src/paginas/ListarManutencao/index.js
 import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
@@ -19,9 +20,12 @@ export default function ListarManutencao({ navigation }) {
 
   const carregarManutencoes = useCallback(() => {
     setRefreshing(true);
-    api.get("/manutencao")
+    api.get("/manutencao/listar")
       .then((res) => setManutencoes(res.data))
-      .catch((error) => Alert.alert("Erro ao carregar", "Verifique sua conexão com o servidor"))
+      .catch((error) => {
+        console.log("Erro ao carregar:", error.response?.data || error.message);
+        Alert.alert("Erro ao carregar", "Verifique sua conexão com o servidor");
+      })
       .finally(() => {
         setRefreshing(false);
         setLoading(false);
@@ -35,9 +39,10 @@ export default function ListarManutencao({ navigation }) {
 
   const excluirManutencao = async (id) => {
     try {
-      await api.delete(`/manutencao/${id}`);
+      await api.delete(`/manutencao/remover/${id}`);
       carregarManutencoes();
     } catch (error) {
+      console.log("Erro ao excluir:", error.response?.data || error.message);
       Alert.alert("Erro ao excluir", "Não foi possível excluir a manutenção");
     }
   };
