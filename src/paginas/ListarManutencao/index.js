@@ -1,4 +1,3 @@
-// src/paginas/ListarManutencao/index.js
 import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
@@ -12,6 +11,7 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import style from "./style";
 import api from "../../services/api";
+import { formatCurrencyBRL, formatDateBR } from "../../utils/formatters";
 
 export default function ListarManutencao({ navigation }) {
   const [manutencoes, setManutencoes] = useState([]);
@@ -54,8 +54,13 @@ export default function ListarManutencao({ navigation }) {
     >
       <View>
         <Text style={style.cardTitle}>{item.equipamento}</Text>
-        <Text style={style.cardSubtitle}>{item.tipoManutencao} - R$ {item.custo.toFixed(2)}</Text>
-        <Text style={style.cardDate}>{item.dataManutencao}</Text>
+        <Text style={style.cardSubtitle}>
+          {item.tipoManutencao} - {formatCurrencyBRL(item.custo)}
+        </Text>
+        <Text style={style.cardDate}>{formatDateBR(item.dataManutencao)}</Text>
+        <Text style={{ fontSize: 12, color: item.foiConcluida ? "green" : "red" }}>
+          {item.foiConcluida ? "Concluída" : "Pendente"}
+        </Text>
       </View>
       <TouchableOpacity onPress={() => excluirManutencao(item.id)}>
         <FontAwesome name="trash" size={24} color="#ff4d4d" />

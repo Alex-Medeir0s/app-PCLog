@@ -1,16 +1,21 @@
-// src/paginas/AlterarManutencao/index.js
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Switch, Alert } from "react-native";
 import style from "./style";
 import api from "../../services/api";
+import { formatInputDate, formatInputToCurrency } from "../../utils/formatters";
 
 export default function AlterarManutencao({ navigation, route }) {
   const { id, equipamento: eq, tipoManutencao: tipo, custo: cs, dataManutencao: dt, foiConcluida: fc } = route.params;
 
+  const formatInitialDate = (isoDate) => {
+    const [ano, mes, dia] = isoDate.split("-");
+    return `${dia}/${mes}/${ano}`;
+  };
+
   const [equipamento, setEquipamento] = useState(eq);
   const [tipoManutencao, setTipoManutencao] = useState(tipo);
-  const [custo, setCusto] = useState(String(cs));
-  const [dataManutencao, setDataManutencao] = useState(dt);
+  const [custo, setCusto] = useState(cs.toFixed(2).replace(".", ","));
+  const [dataManutencao, setDataManutencao] = useState(formatInitialDate(dt));
   const [foiConcluida, setFoiConcluida] = useState(fc);
 
   const alterarManutencao = async () => {
@@ -19,17 +24,15 @@ export default function AlterarManutencao({ navigation, route }) {
       return;
     }
 
-    if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(dataManutencao)) {
-      Alert.alert("Data inválida", "Use o formato AAAA-MM-DD.");
-      return;
-    }
-
     try {
+      const [dia, mes, ano] = dataManutencao.split("/");
+      const dataISO = `${ano}-${mes}-${dia}`;
+
       await api.put(`/manutencao/atualizar/${id}`, {
         equipamento,
         tipoManutencao,
-        custo: parseFloat(custo),
-        dataManutencao,
+        custo: parseFloat(custo.replace(",", ".")),
+        dataManutencao: dataISO,
         foiConcluida,
       });
       Alert.alert("Sucesso", "Manutenção atualizada com sucesso!");
@@ -51,10 +54,21 @@ export default function AlterarManutencao({ navigation, route }) {
       <TextInput style={style.input} value={tipoManutencao} onChangeText={setTipoManutencao} />
 
       <Text style={style.label}>Custo (R$)</Text>
-      <TextInput style={style.input} value={custo} onChangeText={setCusto} keyboardType="numeric" />
+      <TextInput
+        style={style.input}
+        value={custo}
+        onChangeText={(text) => setCusto(formatInputToCurrency(text))}
+        keyboardType="numeric"
+      />
 
-      <Text style={style.label}>Data</Text>
-      <TextInput style={style.input} value={dataManutencao} onChangeText={setDataManutencao} placeholder="AAAA-MM-DD" />
+      <Text style={style.label}>Data (DD/MM/AAAA)</Text>
+      <TextInput
+        style={style.input}
+        value={dataManutencao}
+        onChangeText={(text) => setDataManutencao(formatInputDate(text))}
+        keyboardType="numeric"
+        placeholder="DD/MM/AAAA"
+      />
 
       <View style={style.switchContainer}>
         <Text style={style.label}>Concluída?</Text>
