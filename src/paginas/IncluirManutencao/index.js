@@ -17,6 +17,7 @@ import { formatInputDate } from "../../utils/formatters";
 export default function IncluirManutencao({ navigation }) {
   const [equipamento, setEquipamento] = useState("");
   const [tipoManutencao, setTipoManutencao] = useState("");
+  const [cliente, setCliente] = useState("");
   const [custo, setCusto] = useState("");
   const [dataManutencao, setDataManutencao] = useState("");
   const [foiConcluida, setFoiConcluida] = useState(false);
@@ -28,7 +29,7 @@ export default function IncluirManutencao({ navigation }) {
   };
 
   const incluirManutencao = async () => {
-    if (!equipamento || !tipoManutencao || !custo || !dataManutencao) {
+    if (!equipamento || !tipoManutencao || !cliente || !custo || !dataManutencao) {
       Alert.alert("Erro", "Todos os campos são obrigatórios.");
       return;
     }
@@ -40,6 +41,7 @@ export default function IncluirManutencao({ navigation }) {
       await api.post("/manutencao/adicionar", {
         equipamento,
         tipoManutencao,
+        cliente,
         custo: parseFloat(custo.replace(",", ".")),
         dataManutencao: dataISO,
         foiConcluida,
@@ -54,50 +56,25 @@ export default function IncluirManutencao({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        keyboardShouldPersistTaps="handled"
-      >
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
         <View style={styles.card}>
           <Text style={styles.title}>Nova Manutenção</Text>
 
           <Text style={styles.label}>Equipamento</Text>
-          <TextInput
-            style={styles.input}
-            value={equipamento}
-            onChangeText={setEquipamento}
-            placeholder="Ex: Notebook Dell"
-          />
+          <TextInput style={styles.input} value={equipamento} onChangeText={setEquipamento} placeholder="Ex: Notebook Dell" />
 
           <Text style={styles.label}>Tipo de Manutenção</Text>
-          <TextInput
-            style={styles.input}
-            value={tipoManutencao}
-            onChangeText={setTipoManutencao}
-            placeholder="Ex: Troca de HD"
-          />
+          <TextInput style={styles.input} value={tipoManutencao} onChangeText={setTipoManutencao} placeholder="Ex: Troca de HD" />
+
+          <Text style={styles.label}>Cliente</Text>
+          <TextInput style={styles.input} value={cliente} onChangeText={setCliente} placeholder="Ex: João da Silva" />
 
           <Text style={styles.label}>Custo (R$)</Text>
-          <TextInput
-            style={styles.input}
-            value={custo}
-            onChangeText={(text) => setCusto(formatInputToCurrency(text))}
-            keyboardType="numeric"
-            placeholder="Ex: 250,00"
-          />
+          <TextInput style={styles.input} value={custo} onChangeText={(text) => setCusto(formatInputToCurrency(text))} keyboardType="numeric" placeholder="Ex: 250,00" />
 
           <Text style={styles.label}>Data (DD/MM/AAAA)</Text>
-          <TextInput
-            style={styles.input}
-            value={dataManutencao}
-            onChangeText={(text) => setDataManutencao(formatInputDate(text))}
-            keyboardType="numeric"
-            placeholder="Ex: 25/06/2025"
-          />
+          <TextInput style={styles.input} value={dataManutencao} onChangeText={(text) => setDataManutencao(formatInputDate(text))} keyboardType="numeric" placeholder="Ex: 25/06/2025" />
 
           <View style={styles.switchContainer}>
             <Text style={styles.label}>Concluída?</Text>

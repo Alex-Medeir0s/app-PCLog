@@ -15,7 +15,7 @@ import api from "../../services/api";
 import { formatInputDate, formatInputToCurrency } from "../../utils/formatters";
 
 export default function AlterarManutencao({ navigation, route }) {
-  const { id, equipamento: eq, tipoManutencao: tipo, custo: cs, dataManutencao: dt, foiConcluida: fc } = route.params;
+  const { id, equipamento: eq, tipoManutencao: tipo, cliente: cl, custo: cs, dataManutencao: dt, foiConcluida: fc } = route.params;
 
   const formatInitialDate = (isoDate) => {
     const [ano, mes, dia] = isoDate.split("-");
@@ -24,12 +24,13 @@ export default function AlterarManutencao({ navigation, route }) {
 
   const [equipamento, setEquipamento] = useState(eq);
   const [tipoManutencao, setTipoManutencao] = useState(tipo);
+  const [cliente, setCliente] = useState(cl || "");
   const [custo, setCusto] = useState(cs.toFixed(2).replace(".", ","));
   const [dataManutencao, setDataManutencao] = useState(formatInitialDate(dt));
   const [foiConcluida, setFoiConcluida] = useState(fc);
 
   const alterarManutencao = async () => {
-    if (!equipamento || !tipoManutencao || !custo || !dataManutencao) {
+    if (!equipamento || !tipoManutencao || !cliente || !custo || !dataManutencao) {
       Alert.alert("Campos obrigatórios", "Preencha todos os campos antes de salvar.");
       return;
     }
@@ -41,6 +42,7 @@ export default function AlterarManutencao({ navigation, route }) {
       await api.put(`/manutencao/atualizar/${id}`, {
         equipamento,
         tipoManutencao,
+        cliente,
         custo: parseFloat(custo.replace(",", ".")),
         dataManutencao: dataISO,
         foiConcluida,
@@ -54,14 +56,8 @@ export default function AlterarManutencao({ navigation, route }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ScrollView
-        contentContainerStyle={style.scrollContainer}
-        keyboardShouldPersistTaps="handled"
-      >
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <ScrollView contentContainerStyle={style.scrollContainer} keyboardShouldPersistTaps="handled">
         <View style={style.card}>
           <Text style={style.title}>Editar Manutenção</Text>
 
@@ -71,22 +67,14 @@ export default function AlterarManutencao({ navigation, route }) {
           <Text style={style.label}>Tipo de Manutenção</Text>
           <TextInput style={style.input} value={tipoManutencao} onChangeText={setTipoManutencao} />
 
+          <Text style={style.label}>Cliente</Text>
+          <TextInput style={style.input} value={cliente} onChangeText={setCliente} />
+
           <Text style={style.label}>Custo (R$)</Text>
-          <TextInput
-            style={style.input}
-            value={custo}
-            onChangeText={(text) => setCusto(formatInputToCurrency(text))}
-            keyboardType="numeric"
-          />
+          <TextInput style={style.input} value={custo} onChangeText={(text) => setCusto(formatInputToCurrency(text))} keyboardType="numeric" />
 
           <Text style={style.label}>Data (DD/MM/AAAA)</Text>
-          <TextInput
-            style={style.input}
-            value={dataManutencao}
-            onChangeText={(text) => setDataManutencao(formatInputDate(text))}
-            keyboardType="numeric"
-            placeholder="DD/MM/AAAA"
-          />
+          <TextInput style={style.input} value={dataManutencao} onChangeText={(text) => setDataManutencao(formatInputDate(text))} keyboardType="numeric" placeholder="DD/MM/AAAA" />
 
           <View style={style.switchContainer}>
             <Text style={style.label}>Concluída?</Text>

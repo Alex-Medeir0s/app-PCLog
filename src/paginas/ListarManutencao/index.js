@@ -47,29 +47,28 @@ export default function ListarManutencao({ navigation }) {
     }
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={style.card}
-      onPress={() => navigation.navigate("AlterarManutencao", { ...item })}
-    >
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 12, color: "#666", marginBottom: 2 }}>
-          ID: {item.id}
-        </Text>
-        <Text style={style.cardTitle}>{item.equipamento}</Text>
-        <Text style={style.cardSubtitle}>
-          {item.tipoManutencao} - {formatCurrencyBRL(item.custo)}
-        </Text>
-        <Text style={style.cardDate}>{formatDateBR(item.dataManutencao)}</Text>
-        <Text style={{ fontSize: 12, color: item.foiConcluida ? "green" : "red" }}>
-          {item.foiConcluida ? "Concluída" : "Pendente"}
-        </Text>
-      </View>
-      <TouchableOpacity onPress={() => excluirManutencao(item.id)}>
-        <FontAwesome name="trash" size={24} color="#ff4d4d" />
-      </TouchableOpacity>
+ const renderItem = ({ item }) => (
+  <TouchableOpacity
+    style={style.card}
+    onPress={() => navigation.navigate("AlterarManutencao", { ...item })}
+  >
+    <View style={{ flex: 1 }}>
+      <Text style={style.cardTitle}>{item.equipamento}</Text>
+      <Text style={style.cardSubtitle}>
+        {item.tipoManutencao} - {formatCurrencyBRL(item.custo)}
+      </Text>
+      <Text style={style.cardSubtitle}>Cliente: {item.cliente}</Text>
+      <Text style={style.cardDate}>{formatDateBR(item.dataManutencao)}</Text>
+      <Text style={{ fontSize: 12, color: item.foiConcluida ? "green" : "red" }}>
+        {item.foiConcluida ? "Concluída" : "Pendente"}
+      </Text>
+    </View>
+    <TouchableOpacity onPress={() => excluirManutencao(item.id)}>
+      <FontAwesome name="trash" size={24} color="#ff4d4d" />
     </TouchableOpacity>
-  );
+  </TouchableOpacity>
+);
+
 
   return (
     <View style={style.container}>
