@@ -51,4 +51,26 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+    filtroContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 12,
+  },
+  filtroTexto: {
+    fontSize: 16,
+    color: "#666",
+  },
+  filtroAtivo: {
+    color: "#007bff",
+    fontWeight: "bold",
+  },
+  filtroConcluido: {
+    color: "green",
+    fontWeight: "bold",
+  },
+  filtroPendente: {
+    color: "red",
+    fontWeight: "bold",
+  },
+
 });
