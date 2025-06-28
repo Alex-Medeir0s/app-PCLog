@@ -21,11 +21,34 @@ export default function IncluirManutencao({ navigation }) {
   const [custo, setCusto] = useState("");
   const [dataManutencao, setDataManutencao] = useState("");
   const [foiConcluida, setFoiConcluida] = useState(false);
+  const [cep, setCep] = useState("");
+  const [endereco, setEndereco] = useState("");
 
   const formatInputToCurrency = (text) => {
     const cleaned = text.replace(/[^\d]/g, "");
     const numericValue = parseFloat(cleaned) / 100;
     return numericValue.toFixed(2).replace(".", ",");
+  };
+
+  const buscarEnderecoPorCep = async (valor) => {
+    const cepLimpo = valor.replace(/\D/g, "");
+    setCep(cepLimpo);
+
+    if (cepLimpo.length === 8) {
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+        const data = await response.json();
+        if (!data.erro) {
+          setEndereco(`${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}`);
+        } else {
+          setEndereco("CEP não encontrado");
+        }
+      } catch (error) {
+        setEndereco("Erro ao buscar endereço");
+      }
+    } else {
+      setEndereco("");
+    }
   };
 
   const incluirManutencao = async () => {
@@ -45,6 +68,8 @@ export default function IncluirManutencao({ navigation }) {
         custo: parseFloat(custo.replace(",", ".")),
         dataManutencao: dataISO,
         foiConcluida,
+        cep,
+        endereco,
       });
 
       Alert.alert("Sucesso", "Manutenção adicionada com sucesso!");
@@ -69,6 +94,12 @@ export default function IncluirManutencao({ navigation }) {
 
           <Text style={styles.label}>Cliente</Text>
           <TextInput style={styles.input} value={cliente} onChangeText={setCliente} placeholder="Ex: João da Silva" />
+
+          <Text style={styles.label}>CEP</Text>
+          <TextInput style={styles.input} value={cep} onChangeText={buscarEnderecoPorCep} placeholder="Ex: 74600000" keyboardType="numeric" />
+
+          <Text style={styles.label}>Endereço</Text>
+          <TextInput style={styles.input} value={endereco} editable={false} />
 
           <Text style={styles.label}>Custo (R$)</Text>
           <TextInput style={styles.input} value={custo} onChangeText={(text) => setCusto(formatInputToCurrency(text))} keyboardType="numeric" placeholder="Ex: 250,00" />

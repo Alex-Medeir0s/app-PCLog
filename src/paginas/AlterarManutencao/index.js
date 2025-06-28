@@ -15,7 +15,17 @@ import api from "../../services/api";
 import { formatInputDate, formatInputToCurrency } from "../../utils/formatters";
 
 export default function AlterarManutencao({ navigation, route }) {
-  const { id, equipamento: eq, tipoManutencao: tipo, cliente: cl, custo: cs, dataManutencao: dt, foiConcluida: fc } = route.params;
+  const {
+    id,
+    equipamento: eq,
+    tipoManutencao: tipo,
+    cliente: cl,
+    custo: cs,
+    dataManutencao: dt,
+    foiConcluida: fc,
+    cep: cepInicial,
+    endereco: enderecoInicial,
+  } = route.params;
 
   const formatInitialDate = (isoDate) => {
     const [ano, mes, dia] = isoDate.split("-");
@@ -28,6 +38,29 @@ export default function AlterarManutencao({ navigation, route }) {
   const [custo, setCusto] = useState(cs.toFixed(2).replace(".", ","));
   const [dataManutencao, setDataManutencao] = useState(formatInitialDate(dt));
   const [foiConcluida, setFoiConcluida] = useState(fc);
+  const [cep, setCep] = useState(cepInicial || "");
+  const [endereco, setEndereco] = useState(enderecoInicial || "");
+
+  const buscarEnderecoPorCep = async (valor) => {
+    const cepLimpo = valor.replace(/\D/g, "");
+    setCep(cepLimpo);
+
+    if (cepLimpo.length === 8) {
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+        const data = await response.json();
+        if (!data.erro) {
+          setEndereco(`${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}`);
+        } else {
+          setEndereco("CEP não encontrado");
+        }
+      } catch (error) {
+        setEndereco("Erro ao buscar endereço");
+      }
+    } else {
+      setEndereco("");
+    }
+  };
 
   const alterarManutencao = async () => {
     if (!equipamento || !tipoManutencao || !cliente || !custo || !dataManutencao) {
@@ -46,7 +79,10 @@ export default function AlterarManutencao({ navigation, route }) {
         custo: parseFloat(custo.replace(",", ".")),
         dataManutencao: dataISO,
         foiConcluida,
+        cep,
+        endereco,
       });
+
       Alert.alert("Sucesso", "Manutenção atualizada com sucesso!");
       navigation.navigate("ListarManutencao");
     } catch (error) {
@@ -69,6 +105,12 @@ export default function AlterarManutencao({ navigation, route }) {
 
           <Text style={style.label}>Cliente</Text>
           <TextInput style={style.input} value={cliente} onChangeText={setCliente} />
+
+          <Text style={style.label}>CEP</Text>
+          <TextInput style={style.input} value={cep} onChangeText={buscarEnderecoPorCep} keyboardType="numeric" placeholder="Ex: 74600000" />
+
+          <Text style={style.label}>Endereço</Text>
+          <TextInput style={style.input} value={endereco} editable={false} />
 
           <Text style={style.label}>Custo (R$)</Text>
           <TextInput style={style.input} value={custo} onChangeText={(text) => setCusto(formatInputToCurrency(text))} keyboardType="numeric" />
